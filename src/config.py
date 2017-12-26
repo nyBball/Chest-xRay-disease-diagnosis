@@ -1,0 +1,13 @@
+val_abnormal_path='/media/nie/Data/data/JiuFeng/DR2/local_abnormal/val/'
+val_normal_path='/media/nie/2T/data/JiuFeng/DR2/local_multiscale_normal/val/'
+train_abnormal_path='/media/nie/Data/data/JiuFeng/DR2/local_abnormal/train/'
+train_normal_path='/media/nie/2T/data/JiuFeng/DR2/local_multiscale_normal/train/'
+train_weight_path='./inception_v3_weights_tf_dim_ordering_tf_kernels_notop'
+test_weight_path='./xRayModel-02-0.7493.hdf5'
+txtPath='/home/nie/PycharmProjects/chestRay/result/count/DR2/DR2count.txt'
+test_img_path='/media/nie/Data/data/JiuFeng/DR1/oneDises/FeiBuGanRan/val_abnormal/'
+
+server_val_abnormal_path='/data1/nieying/chestRay/data/stage2Data/local_multiscale_abnormal/val/'
+server_val_normal_path='/data1/nieying/chestRay/data/stage2Data/local_multiscale_normal/val/'
+server_train_abnormal_path='/data1/nieying/chestRay/data/stage2Data/local_multiscale_abnormal/train/'
+server_train_normal_path='/data1/nieying/chestRay/data/stage2Data/local_multiscale_normal/train/'
