@@ -20,11 +20,11 @@
 
 - 训练过程
 
-	一次读入一张abnormal图片和一张normal图片，先进行z-score标准化，对于abnormal图片，根据病灶的面积和宽长比从预设的14个尺度中选择最相似的一个尺度，用该尺度在病灶的附近随机裁剪n数量的与病灶矩形框的Iou>0.7的abnormal图像块，同时用该尺度在abnormal图片normal区域随机裁剪n数量的normal图像块，同时也用该尺度在normal图片上随机裁剪2n数量的normal图像块（保证正负样本比例约为1:3）。裁剪完毕后，将这4n数量的图像块送入inception v3（去掉全连接层并加入空间金字塔池化层）进行fine-tune，训练4个epoch“热身”后，再采用online hard example mining策略训练。流程图如图所示![](https://i.imgur.com/0VU4ink.png)
+	一次读入一张abnormal图片和一张normal图片，先进行z-score标准化，对于abnormal图片，根据病灶的面积和宽长比从预设的14个尺度中选择最相似的一个尺度，用该尺度在病灶的附近随机裁剪n数量的与病灶矩形框的Iou>0.7的abnormal图像块，同时用该尺度在abnormal图片normal区域随机裁剪n数量的normal图像块，同时也用该尺度在normal图片上随机裁剪2n数量的normal图像块（保证正负样本比例约为1:3）。裁剪完毕后，将这4n数量的图像块送入inception v3（去掉全连接层并加入空间金字塔池化层）进行fine-tune，训练4个epoch“热身”后，再采用online hard example mining策略训练。![](https://i.imgur.com/0VU4ink.png)
 
 - 测试过程
 
-	对于每张图片，用预设的14个尺度分别进行16*16裁剪，将裁剪得到的图像块输入网络测试得到每个图像块有病的概率，取所有图像块有病的最大概率值作为该张图片的最终有病概率值。
+	对于每张图片，用预设的14个尺度分别进行16x16裁剪，将裁剪得到的图像块输入网络测试得到每个图像块有病的概率，取所有图像块有病的最大概率值作为该张图片的最终有病概率值。
 
 
 ## 项目构成：
@@ -38,7 +38,7 @@
 
 - generator.py
 
-	训练、测试生成器函数文件。主要包含两部分：train生成器和test生成器。对于train生成器，TrainBatchGenerator/ValBatchGenerator、all_resize_generator、onlineLocalGenerator、onlineMultiScaleSPPGenerator分别意指10*10裁剪训练、resize成512*512训练、在线单一尺度切割后resize训练、在线多尺度切割后SPP池化训练。对于test生成器，test_local_generator、test_global_generator、test_multiScale_SPP_generator分别意指10*10裁剪测试、resize成512*512测试、在线多尺度切割后SPP池化测试。
+	训练、测试生成器函数文件。主要包含两部分：train生成器和test生成器。对于train生成器，TrainBatchGenerator/ValBatchGenerator、all_resize_generator、onlineLocalGenerator、onlineMultiScaleSPPGenerator分别意指10x10裁剪训练、resize成512x512训练、在线单一尺度切割后resize训练、在线多尺度切割后SPP池化训练。对于test生成器，test_local_generator、test_global_generator、test_multiScale_SPP_generator分别意指10x10裁剪测试、resize成512x512测试、在线多尺度切割后SPP池化测试。
 
 - myinceptionv3.py
 
@@ -46,7 +46,7 @@
 
 - preProcessData.py
 
-	对数据预处理文件。其中countDises函数用来读取图片病变属性信息，并保存到txt文件；moveDisesRatio函数用来按病变面积与总面积的比是否超过0.1区分成global、local两类疾病；plotHist函数用来画正交比、面积统计直方图，以决定多尺度训练时选择哪些尺度；countCropANratio函数用来统计10*10裁剪后，abnormal patch和normal patch数量比例，以选择对abnormal patch增广的倍数，以平衡正负样本比例约为1:3；saveLocalPatch函数用来离线保存10*10裁剪训练集patch，以用于10*10裁剪训练； saveGlobalPatch用来离线保存resize 512*512 patch，以用于直接resize成512*512图片训练。
+	对数据预处理文件。其中countDises函数用来读取图片病变属性信息，并保存到txt文件；moveDisesRatio函数用来按病变面积与总面积的比是否超过0.1区分成global、local两类疾病；plotHist函数用来画正交比、面积统计直方图，以决定多尺度训练时选择哪些尺度；countCropANratio函数用来统计10x10裁剪后，abnormal patch和normal patch数量比例，以选择对abnormal patch增广的倍数，以平衡正负样本比例约为1:3；saveLocalPatch函数用来离线保存10x10裁剪训练集patch，以用于10x10裁剪训练； saveGlobalPatch用来离线保存resize 512x512 patch，以用于直接resize成512x512图片训练。
 
 - proProcessResult.py
 
@@ -58,15 +58,15 @@
 
 - train_inceptionV3.py
 
-	训练网络模型文件。其中包括SGD学习率衰减速率设置、模型构建及参数设置以及第一批数据all resize into 512*512训练、第一批数据10*10crop训练、第二批数据集10*10crop训练、肺部感染多尺度训练、第二批数据集多尺度训练等操作。
+	训练网络模型文件。其中包括SGD学习率衰减速率设置、模型构建及参数设置以及第一批数据all resize into 512x512训练、第一批数据10x10crop训练、第二批数据集10x10crop训练、肺部感染多尺度训练、第二批数据集多尺度训练等操作。
 
 - test.py
 
-	载入预训练好的模型在测试集上进行测试文件。其中包括第一批数据集all resize into 512*512测试、第一批数据集/第二批数据集10*10crop测试、肺部感染多尺度测试、第二批数据集多尺度测试等操作。
+	载入预训练好的模型在测试集上进行测试文件。其中包括第一批数据集all resize into 512x512测试、第一批数据集/第二批数据集10x10crop测试、肺部感染多尺度测试、第二批数据集多尺度测试等操作。
 
 - testSingleImg.py
 
-	载入预训练好的模型，用10*10裁剪的方法测试单张图片有病概率的文件。
+	载入预训练好的模型，用10x10裁剪的方法测试单张图片有病概率的文件。
 
 
 ## 实验效果：
